@@ -19,6 +19,7 @@ def cli(argv: list[str] | None = None) -> int:
     tr.add_argument("--lang", help="force source language (ISO code)")
     tr.add_argument("--engine", choices=["whisper", "whistle"], help="force STT engine")
     tr.add_argument("--timings", action="store_true")
+    sub.add_parser("doctor", help="check binaries, models, services and credentials")
     sub.add_parser("run", help="run the enabled channels (service mode)")
     args = ap.parse_args(argv)
 
@@ -34,6 +35,12 @@ def cli(argv: list[str] | None = None) -> int:
         print(format_reply(res))
         if args.timings:
             print("\n" + ", ".join(f"{k}={v:.1f}s" for k, v in res.timings.items()))
+    if args.cmd == "doctor":
+        from .config import Secrets
+        from .doctor import FAIL, render, run_checks
+        checks = run_checks(cfg, Secrets())
+        print(render(checks))
+        return 1 if any(c.status == FAIL for c in checks) else 0
     if args.cmd == "run":
         import asyncio
         return asyncio.run(serve(cfg))
