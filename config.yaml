@@ -1,0 +1,21 @@
+# Tuned for a CPU-only mini PC (6th-gen Intel, 32 GB RAM, Debian).
+channels: { telegram: true, email: false }
+stt:
+  prefer: whisper            # whistle | whisper  (whistle is optional, see docs/whistle-notes.md)
+  whistle_languages: [en, de, fr, es, it, nl, pl]
+  whistle_binary: models/needle
+  whistle_model: models/whistle.cact
+  whisper_model: medium      # tiny|base|small|medium|large-v3-turbo; or a local CT2 model dir
+  whisper_compute_type: int8
+  whisper_threads: 4
+  models_dir: models
+  chunk_seconds: 28
+translate:
+  backend: nllb              # nllb | ollama
+  nllb_model_dir: models/nllb-200-distilled-600M-ct2
+  nllb_tokenizer: facebook/nllb-200-distilled-600M
+  ollama_url: http://localhost:11434
+  ollama_model: qwen2.5:3b
+  summary: false
+limits: { max_minutes: 10, max_mb: 25 }
+privacy: { keep_audio: false, keep_text_days: 7 }

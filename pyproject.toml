@@ -1,0 +1,32 @@
+[project]
+name = "voicemail-translator"
+version = "0.1.0"
+description = "Local transcribe + translate pipeline for forwarded voice notes"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+stt = ["faster-whisper>=1.0"]
+nllb = ["ctranslate2>=4.0", "transformers>=4.40", "sentencepiece>=0.2"]
+telegram = ["python-telegram-bot>=21"]
+email = ["imap-tools>=1.7"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+vmt = "vmt.main:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vmt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
