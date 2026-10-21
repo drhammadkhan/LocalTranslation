@@ -1,0 +1,27 @@
+# CasaOS: App Store -> Custom Install -> Import this file (or `docker compose up -d`).
+name: voicemail-translator
+services:
+  vmt:
+    build: .
+    image: voicemail-translator:latest
+    container_name: vmt
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HF_HOME: /app/models/hf
+      TZ: Europe/London
+    volumes:
+      - ./models:/app/models
+      - ./config.yaml:/app/config.yaml:ro
+    cpus: "4"
+    mem_limit: 12g
+    # Outbound-only (Telegram long-polling); no ports published.
+    # If using translate.backend=ollama, set ollama_url to http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+x-casaos:
+  architectures: [amd64]
+  main: vmt
+  title: { en_us: Voicemail Translator }
+  description: { en_us: Local voice note transcription and translation via Telegram. }
+  category: Utilities
